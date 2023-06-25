@@ -71,16 +71,16 @@ export default class EventBusService extends AbstractEventBusModuleService {
       : [{ eventName: eventNameOrData, data }]
 
     const jobs = events.map((event) => {
-      const data = { name: event.eventName, data: event.data }
-      return this.queue_.createJob(data)
+      const job = { name: event.eventName, data: event.data }
+      return this.queue_.createJob(job)
     })
 
     this.queue_.saveAll(jobs)
   }
 
-  processor_ = async (job: Job<{ eventName: string; data: unknown }>) => {
-    const { eventName, data } = job.data
-    const eventSubscribers = this.eventToSubscribersMap.get(eventName) || []
+  processor_ = async (job: Job<{ name: string; data: unknown }>) => {
+    const { name, data } = job.data
+    const eventSubscribers = this.eventToSubscribersMap.get(name) || []
     const wildcardSubscribers = this.eventToSubscribersMap.get('*') || []
 
     const subscribers: SubscriberDescriptor[] = [
@@ -89,14 +89,14 @@ export default class EventBusService extends AbstractEventBusModuleService {
     ]
 
     this.logger_.info(
-      `Processing ${eventName} which has ${eventSubscribers.length} subscribers`
+      `Processing ${name} which has ${eventSubscribers.length} subscribers`
     )
 
     const subscribersResult = await Promise.all(
       subscribers.map(async ({ subscriber }) => {
-        return await subscriber(data, eventName).catch((err) => {
+        return await subscriber(data, name).catch((err) => {
           this.logger_.warn(
-            `An error occurred while processing ${eventName}: ${err}`
+            `An error occurred while processing ${name}: ${err}`
           )
           return err
         })
