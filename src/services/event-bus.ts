@@ -10,7 +10,7 @@ interface InjectedDependencies {
   redis: VercelKV
 }
 
-const QUEUE_NAME = 'joonie-event-queue'
+const QUEUE_NAME = 'joonieshop-event-queue'
 
 export default class EventBusService extends AbstractEventBusModuleService {
   protected readonly logger_: Logger
@@ -33,11 +33,15 @@ export default class EventBusService extends AbstractEventBusModuleService {
       // @ts-ignore -- Vercel KV types do not match IORedis types (used under the hood by bullmq)
       connection: redis,
     })
-    this.worker_ = new Worker(QUEUE_NAME, this.processor_, {
-      ...(moduleOptions.workerOptions ?? {}),
-      // @ts-ignore -- Vercel KV types do not match IORedis types (used under the hood by bullmq)
-      connection: redis,
-    })
+    this.worker_ = new Worker(
+      moduleOptions.queueName ?? QUEUE_NAME,
+      this.processor_,
+      {
+        ...(moduleOptions.workerOptions ?? {}),
+        // @ts-ignore -- Vercel KV types do not match IORedis types (used under the hood by bullmq)
+        connection: redis,
+      }
+    )
 
     this.setupWorker()
   }

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@medusajs/utils");
 const bullmq_1 = require("bullmq");
-const QUEUE_NAME = 'joonie-event-queue';
+const QUEUE_NAME = 'joonieshop-event-queue';
 class EventBusService extends utils_1.AbstractEventBusModuleService {
     constructor({ logger, redis }, moduleOptions = {}) {
         super();
@@ -101,7 +101,7 @@ class EventBusService extends utils_1.AbstractEventBusModuleService {
             // @ts-ignore -- Vercel KV types do not match IORedis types (used under the hood by bullmq)
             connection: redis,
         });
-        this.worker_ = new bullmq_1.Worker(QUEUE_NAME, this.processor_, {
+        this.worker_ = new bullmq_1.Worker(moduleOptions.queueName ?? QUEUE_NAME, this.processor_, {
             ...(moduleOptions.workerOptions ?? {}),
             // @ts-ignore -- Vercel KV types do not match IORedis types (used under the hood by bullmq)
             connection: redis,
