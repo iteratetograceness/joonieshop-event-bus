@@ -1,4 +1,3 @@
-import { VercelKV } from '@vercel/kv'
 import BeeQueue, { Job } from 'bee-queue'
 import { Logger } from '@medusajs/modules-sdk'
 import { EmitData, SubscriberDescriptor } from '@medusajs/types'
@@ -7,7 +6,6 @@ import { EventBusModuleOptions } from '../types'
 
 interface InjectedDependencies {
   logger: Logger
-  redis: VercelKV
 }
 
 const QUEUE_NAME = 'joonieshop-event-queue'
@@ -18,10 +16,11 @@ export default class EventBusService extends AbstractEventBusModuleService {
   protected queue_: BeeQueue
 
   constructor(
-    { logger, redis }: InjectedDependencies,
-    moduleOptions: EventBusModuleOptions = {}
+    { logger }: InjectedDependencies,
+    moduleOptions: EventBusModuleOptions
   ) {
-    super()
+    // @ts-ignore
+    super(...arguments)
 
     this.logger_ = logger
     this.moduleOptions_ = moduleOptions
@@ -32,12 +31,9 @@ export default class EventBusService extends AbstractEventBusModuleService {
       prefix: 'joonieshop',
       stallInterval: 5 * 60 * 1000,
       delayedDebounce: 5 * 60 * 1000,
-      redis:
-        process.env.NODE_ENV === 'production'
-          ? redis
-          : {
-              url: process.env.EVENT_BUS_REDIS_URL,
-            },
+      redis: {
+        url: moduleOptions.redisUrl,
+      },
       removeOnSuccess: true,
       ...(moduleOptions.queueOptions ?? {}),
     })
