@@ -1,5 +1,5 @@
 import { VercelKV } from '@vercel/kv'
-import BeeQueue, { DoneCallback, Job } from 'bee-queue'
+import BeeQueue, { Job } from 'bee-queue'
 import { Logger } from '@medusajs/modules-sdk'
 import { EmitData, SubscriberDescriptor } from '@medusajs/types'
 import { AbstractEventBusModuleService } from '@medusajs/utils'
@@ -36,7 +36,7 @@ export default class EventBusService extends AbstractEventBusModuleService {
         process.env.NODE_ENV === 'production'
           ? redis
           : {
-              path: process.env.EVENT_BUS_REDIS_URL,
+              url: process.env.EVENT_BUS_REDIS_URL,
             },
       removeOnSuccess: true,
       ...(moduleOptions.queueOptions ?? {}),

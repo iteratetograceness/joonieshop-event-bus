@@ -1,6 +1,6 @@
 {
   "name": "joonieshop-event-bus",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Custom event bus for joonieshop",
   "main": "dist/index.js",
   "files": [

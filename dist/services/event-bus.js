@@ -36,7 +36,7 @@ class EventBusService extends utils_1.AbstractEventBusModuleService {
             redis: process.env.NODE_ENV === 'production'
                 ? redis
                 : {
-                    path: process.env.EVENT_BUS_REDIS_URL,
+                    url: process.env.EVENT_BUS_REDIS_URL,
                 },
             removeOnSuccess: true,
             ...(moduleOptions.queueOptions ?? {}),
