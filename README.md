@@ -2,6 +2,10 @@
 
 Uses Vercel KV under the hood. Please ensure you have `KV_REST_API_URL` and `KV_REST_API_TOKEN` in an `.env` file inside your Medusa server.
 
+## Local Development
+
+In your local `.env` file, be sure to add a local `EVENT_BUS_REDIS_URL` variable. This will be used to connect to your local Redis instance, rather than your Vercel KV instance.
+
 ## Options
 
 | Property | Type | Default | Description |

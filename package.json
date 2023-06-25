@@ -20,7 +20,7 @@
     "@medusajs/utils": "^1.9.1",
     "@vercel/kv": "^0.2.2",
     "awilix": "^8.0.1",
-    "bullmq": "^4.1.0"
+    "bee-queue": "^1.5.0"
   },
   "devDependencies": {
     "@medusajs/types": "^1.8.9",
