@@ -10,17 +10,17 @@ class EventBusService extends utils_1.AbstractEventBusModuleService {
     constructor({ logger, redis }, moduleOptions = {}) {
         super();
         this.processor_ = async (job) => {
-            const { eventName, data } = job.data;
-            const eventSubscribers = this.eventToSubscribersMap.get(eventName) || [];
+            const { name, data } = job.data;
+            const eventSubscribers = this.eventToSubscribersMap.get(name) || [];
             const wildcardSubscribers = this.eventToSubscribersMap.get('*') || [];
             const subscribers = [
                 ...eventSubscribers,
                 ...wildcardSubscribers,
             ];
-            this.logger_.info(`Processing ${eventName} which has ${eventSubscribers.length} subscribers`);
+            this.logger_.info(`Processing ${name} which has ${eventSubscribers.length} subscribers`);
             const subscribersResult = await Promise.all(subscribers.map(async ({ subscriber }) => {
-                return await subscriber(data, eventName).catch((err) => {
-                    this.logger_.warn(`An error occurred while processing ${eventName}: ${err}`);
+                return await subscriber(data, name).catch((err) => {
+                    this.logger_.warn(`An error occurred while processing ${name}: ${err}`);
                     return err;
                 });
             }));
@@ -54,8 +54,8 @@ class EventBusService extends utils_1.AbstractEventBusModuleService {
             ? eventNameOrData
             : [{ eventName: eventNameOrData, data }];
         const jobs = events.map((event) => {
-            const data = { name: event.eventName, data: event.data };
-            return this.queue_.createJob(data);
+            const job = { name: event.eventName, data: event.data };
+            return this.queue_.createJob(job);
         });
         this.queue_.saveAll(jobs);
     }

@@ -16,7 +16,7 @@ export default class EventBusService extends AbstractEventBusModuleService {
     emit<T>(eventName: string, data: T, options: Record<string, unknown>): Promise<void>;
     emit<T>(data: EmitData<T>[]): Promise<void>;
     processor_: (job: Job<{
-        eventName: string;
+        name: string;
         data: unknown;
     }>) => Promise<any[]>;
 }
