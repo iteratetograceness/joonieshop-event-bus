@@ -7,8 +7,9 @@ const bee_queue_1 = __importDefault(require("bee-queue"));
 const utils_1 = require("@medusajs/utils");
 const QUEUE_NAME = 'joonieshop-event-queue';
 class EventBusService extends utils_1.AbstractEventBusModuleService {
-    constructor({ logger, redis }, moduleOptions = {}) {
-        super();
+    constructor({ logger }, moduleOptions) {
+        // @ts-ignore
+        super(...arguments);
         this.processor_ = async (job) => {
             const { name, data } = job.data;
             const eventSubscribers = this.eventToSubscribersMap.get(name) || [];
@@ -33,11 +34,9 @@ class EventBusService extends utils_1.AbstractEventBusModuleService {
             prefix: 'joonieshop',
             stallInterval: 5 * 60 * 1000,
             delayedDebounce: 5 * 60 * 1000,
-            redis: process.env.NODE_ENV === 'production'
-                ? redis
-                : {
-                    url: process.env.EVENT_BUS_REDIS_URL,
-                },
+            redis: {
+                url: moduleOptions.redisUrl,
+            },
             removeOnSuccess: true,
             ...(moduleOptions.queueOptions ?? {}),
         });
